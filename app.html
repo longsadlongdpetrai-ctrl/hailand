@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nike Clone - Giày, Quần áo & Phụ kiện thể thao</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- RESET & BASIC STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #111111;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        /* --- NAVIGATION BAR (THANH MENU) --- */
+        header {
+            width: 100%;
+            position: sticky;
+            top: 0;
+            background-color: #ffffff;
+            z-index: 1000;
+            padding: 0 40px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+
+        /* Logo Nike */
+        .logo svg {
+            width: 60px;
+            height: 60px;
+            display: block;
+        }
+
+        /* Danh mục chính giữa */
+        .nav-menu {
+            display: flex;
+            gap: 24px;
+            height: 100%;
+            align-items: center;
+        }
+
+        .nav-menu > li {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .nav-item {
+            font-size: 16px;
+            font-weight: 500;
+            padding: 18px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom 0.2s ease;
+            cursor: pointer;
+        }
+
+        .nav-menu > li.active .nav-item,
+        .nav-menu > li:hover .nav-item {
+            border-bottom: 2px solid #111111;
+        }
+
+        /* --- MEGA MENU --- */
+        .mega-menu {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+            padding: 40px 80px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.25s ease-in-out;
+            z-index: 999;
+            border-top: 1px solid #f5f5f5;
+        }
+
+        .nav-menu > li:hover .mega-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .mega-column h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #111111;
+        }
+
+        .mega-column ul {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mega-column ul li a {
+            font-size: 14px;
+            color: #757575;
+            transition: color 0.2s;
+        }
+
+        .mega-column ul li a:hover {
+            color: #111111;
+        }
+
+        /* Thanh tìm kiếm và Icon bên phải */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            background-color: #f5f5f5;
+            border-radius: 100px;
+            padding: 8px 16px 8px 40px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .search-box:hover {
+            background-color: #e5e5e5;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            color: #111111;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .search-input {
+            border: none;
+            background: none;
+            outline: none;
+            font-size: 15px;
+            width: 140px;
+            transition: width 0.3s ease;
+        }
+
+        .search-input:focus {
+            width: 220px;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 16px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .nav-icons i:hover {
+            opacity: 0.6;
+        }
+
+        /* --- MAIN CONTAINER --- */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        /* --- BANNER BAN ĐẦU --- */
+        .section-title {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .favourites-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 60px;
+        }
+
+        .fav-card {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .fav-card img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .fav-card:hover img {
+            transform: scale(1.03);
+        }
+
+        /* --- FORM THÊM SẢN PHẨM --- */
+        .add-product-section {
+            background-color: #f9f9f9;
+            border: 1px solid #e5e5e5;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #111111;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 10px 14px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #111111;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 40px;
+        }
+
+        .btn-submit-container {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .btn-add-product {
+            background-color: #111111;
+            color: #ffffff;
+            border: none;
+            padding: 12px 30px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-add-product:hover {
+            background-color: #444444;
+        }
+
+        /* --- DANH SÁCH SẢN PHẨM (SHOP) --- */
+        .product-section {
+            display: flex;
+            gap: 40px;
+        }
+
+        /* Bộ lọc bên trái (Sidebar Filter) */
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+        }
+
+        .filter-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .filter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .filter-list a {
+            font-size: 15px;
+            font-weight: 400;
+        }
+
+        .filter-list a:hover {
+            color: #757575;
+        }
+
+        /* Lưới hiển thị sản phẩm chính */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            flex-grow: 1;
+        }
+
+        .product-card {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .product-card.hidden {
+            display: none !important;
+        }
+
+        .product-img-wrapper {
+            background-color: #f6f6f6;
+            margin-bottom: 12px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            mix-blend-mode: multiply;
+        }
+
+        .product-info {
+            padding: 4px 0;
+        }
+
+        .tag-status {
+            color: #b73a00;
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            min-height: 22px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #111111;
+            margin-bottom: 2px;
+        }
+
+        .product-category {
+            font-size: 15px;
+            color: #757575;
+            margin-bottom: 6px;
+        }
+
+        .product-price {
+            font-size: 16px;
+            font-weight: 500;
+            color: #111111;
+        }
+
+        .no-results {
+            grid-column: span 3;
+            text-align: center;
+            font-size: 18px;
+            color: #757575;
+            padding: 40px 0;
+            display: none;
+        }
+
+        /* --- MODAL CHI TIẾT SẢN PHẨM --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            background-color: #ffffff;
+            width: 90%;
+            max-width: 1100px;
+            max-height: 90vh;
+            border-radius: 8px;
+            overflow-y: auto;
+            position: relative;
+            padding: 40px;
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #111111;
+        }
+
+        .close-modal-btn:hover {
+            opacity: 0.6;
+        }
+
+        .modal-layout {
+            display: grid;
+            grid-template-columns: 80px 1fr 1fr;
+            gap: 30px;
+        }
+
+        /* Gallery ảnh nhỏ bên trái */
+        .modal-thumbs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .thumb-img {
+            width: 100%;
+            background-color: #f6f6f6;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .thumb-img:hover, .thumb-img.active {
+            border-color: #111111;
+        }
+
+        /* Khung ảnh lớn chính giữa */
+        .modal-main-img {
+            background-color: #f6f6f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-main-img img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Cột chi tiết thông tin bên phải */
+        .modal-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-name {
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .detail-category {
+            font-size: 16px;
+            color: #111111;
+            margin-bottom: 16px;
+        }
+
+        .price-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .detail-price {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .detail-old-price {
+            font-size: 16px;
+            color: #757575;
+            text-decoration: line-through;
+        }
+
+        .detail-discount {
+            color: #2b7846;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        /* Khu vực chọn Size */
+        .size-section-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .size-guide {
+            color: #757575;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .size-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .size-btn {
+            background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+            padding: 14px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .size-btn:hover {
+            border-color: #111111;
+        }
+
+        .size-btn.selected {
+            border-color: #111111;
+            background-color: #111111;
+            color: #ffffff;
+        }
+
+        /* Nút hành động mua sắm */
+        .action-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .btn-black {
+            background-color: #111111;
+            color: #ffffff;
+            border: none;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-black:hover {
+            background-color: #444444;
+        }
+
+        .btn-outline {
+            background-color: #ffffff;
+            color: #111111;
+            border: 1px solid #e5e5e5;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-outline:hover {
+            border-color: #111111;
+        }
+
+        /* Mô tả giới thiệu sản phẩm */
+        .detail-desc-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #111111;
+            margin-bottom: 20px;
+        }
+
+        .detail-materials ul {
+            padding-left: 20px;
+            list-style-type: disc;
+            font-size: 14px;
+            color: #444444;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .favourites-grid, .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .sidebar, .mega-menu {
+                display: none !important; 
+            }
+            .modal-layout {
+                grid-template-columns: 1fr;
+            }
+            .modal-thumbs {
+                flex-direction: row;
+            }
+            .modal-thumbs .thumb-img {
+                width: 60px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 0 20px; }
+            .nav-menu { display: none; } 
+            .favourites-grid, .product-grid { grid-template-columns: 1fr; }
+            .container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo" data-category="all">
+                <svg viewBox="0 0 24 24" fill="#111111"><path d="M21 6.5c-2.3 1.9-6.4 5.2-11.4 9.6l-3.2 2.8c-.3.3-.8.1-.8-.3-.2-1.3-.4-3.9.5-6.5C6.4 9.3 9.4 7.2 13 6c3-.9 6.2-.5 8 .5z"/></svg>
+            </a>
+
+            <ul class="nav-menu">
+                <li class="nav-tab active" data-category="all"><a href="#" class="nav-item">New & Featured</a></li>
+                
+                <li class="nav-tab" data-category="men">
+                    <span class="nav-item">Men</span>
+                    <div class="mega-menu">
+                        <div class="mega-column">
+                            <h4>Nổi bật</h4>
+                            <ul>
+                                <li><a href="#">Tất cả đồ Nam</a></li>
+                                <li><a href="#">Sản phẩm mới bán</a></li>
+                                <li><a href="#">Giảm giá độc quyền</a></li>
+                            </ul>
+                        </div>
+                        <div class="mega-column">
+                            <h4>Giày Nam (Shoes)</h4>
+                            <ul>
+                                <li><a href="#">Jordan 1 / Jordan Mid</a></li>
+                                <li><a href="#">Giày Bóng Rổ (Basketball)</a></li>
+                                <li><a href="#">Giày Chạy Bộ (Running)</a></li>
+                            </ul>
+                        </div>
+                        <div class="mega-column">
+                            <h4>Quần áo (Clothing)</h4>
+                            <ul>
+                                <li><a href="#">Áo thun & Áo Polo</a></li>
+                                <li><a href="#">Quần Short & Quần Dài</a></li>
+                            </ul>
+                        </div>
+                        <div class="mega-column">
+                            <h4>Mua theo môn thể thao</h4>
+                            <ul>
+                                <li><a href="#">Bóng đá (Football)</a></li>
+                                <li><a href="#">Bóng rổ (Basketball)</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-tab" data-category="women">
+                    <span class="nav-item">Women</span>
+                    <div class="mega-menu">
+                        <div class="mega-column">
+                            <h4>Nổi bật</h4>
+                            <ul>
+                                <li><a href="#">Tất cả đồ Nữ</a></li>
+                                <li><a href="#">Hàng mới về</a></li>
+                            </ul>
+                        </div>
+                        <div class="mega-column">
+                            <h4>Giày Nữ</h4>
+                            <ul>
+                                <li><a href="#">Air Force 1</a></li>
+                                <li><a href="#">Nike Air Max</a></li>
+                            </ul>
+                        </div>
+                        <div class="mega-column">
+                            <h4>Quần áo Nữ</h4>
+                            <ul>
+                                <li><a href="#">Áo Thun & Crop-top</a></li>
+                                <li><a href="#">Quần Leggings & Tights</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-tab" data-category="kids">
+                    <span class="nav-item">Kids</span>
+                    <div class="mega-menu">
+                        <div class="mega-column">
+                            <h4>Theo độ tuổi</h4>
+                            <ul>
+                                <li><a href="#">Trẻ lớn (7 - 14 tuổi)</a></li>
+                                <li><a href="#">Trẻ nhỏ (4 - 7 tuổi)</a></li>
+                            </ul>
+                        </div>
+                        <div class="mega-column">
+                            <h4>Giày Trẻ Em</h4>
+                            <ul>
+                                <li><a href="#">Giày Thể Thao Trẻ Em</a></li>
+                                <li><a href="#">Jordan Kids</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-tab" data-category="football"><a href="#" class="nav-item">Nike Football</a></li>
+
+                <li class="nav-tab" data-category="sale"><a href="#" class="nav-item">Sale</a></li>
+            </ul>
+
+            <div class="nav-right">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass" id="search-btn"></i>
+                    <input type="text" id="search-input" class="search-input" placeholder="Tìm kiếm trong mục này...">
+                </div>
+                <div class="nav-icons">
+                    <i class="fa-regular fa-heart" title="Yêu thích"></i>
+                    <i class="fa-solid fa-bag-shopping" title="Giỏ hàng"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <h2 class="section-title">The Favourites Edit</h2>
+        <section class="favourites-grid">
+            <div class="fav-card">
+                <img src="https://images.unsplash.com/photo-1502224562085-639556652f33?auto=format&fit=crop&w=600&q=80" alt="Nike Running 1">
+            </div>
+            <div class="fav-card">
+                <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=600&q=80" alt="Nike Running 2">
+            </div>
+            <div class="fav-card">
+                <img src="https://images.unsplash.com/photo-1530143311094-34d807799e8f?auto=format&fit=crop&w=600&q=80" alt="Nike Running 3">
+            </div>
+        </section>
+
+        <section class="add-product-section">
+            <h2 class="section-title" style="margin-bottom: 5px;"><i class="fa-solid fa-plus-minus"></i> Quản lý cửa hàng: Thêm Sản Phẩm Mới</h2>
+            <p style="font-size: 14px; color: #757575;">Nhập thông tin bên dưới để tạo thẻ sản phẩm tự động hiển thị lên trang web.</p>
+            
+            <form id="add-product-form" class="form-grid">
+                <div class="form-group">
+                    <label for="form-name">Tên sản phẩm *</label>
+                    <input type="text" id="form-name" placeholder="Ví dụ: Nike Air Max 90" required>
+                </div>
+                <div class="form-group">
+                    <label for="form-category">Phân loại hiển thị *</label>
+                    <input type="text" id="form-category" placeholder="Ví dụ: Giày thể thao nam" required>
+                </div>
+                <div class="form-group">
+                    <label for="form-price">Giá tiền (₫) *</label>
+                    <input type="text" id="form-price" placeholder="Ví dụ: 3,500,000₫" required>
+                </div>
+                <div class="form-group">
+                    <label for="form-tag">Trạng thái (Tag)</label>
+                    <input type="text" id="form-tag" placeholder="Ví dụ: Just In, Bestseller">
+                </div>
+                <div class="form-group">
+                    <label for="form-select-cat">Nhóm bộ lọc chính *</label>
+                    <select id="form-select-cat" required>
+                        <option value="men">Men (Đồ Nam)</option>
+                        <option value="women">Women (Đồ Nữ)</option>
+                        <option value="kids">Kids (Trẻ em)</option>
+                        <option value="football">Football (Bóng đá)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="form-image">Đường dẫn ảnh hình vuông (URL) *</label>
+                    <input type="url" id="form-image" value="https://images.unsplash.com/photo-1597045566677-8cf032ed6634?auto=format&fit=crop&w=600&q=80" required>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label for="form-desc">Mô tả ngắn gọn sản phẩm *</label>
+                    <textarea id="form-desc" placeholder="Nhập đoạn mô tả chi tiết tính năng của sản phẩm khi bấm mở xem..." required></textarea>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label for="form-materials">Thông số kỹ thuật (Dùng dấu chấm phẩy ";" để ngắt dòng)</label>
+                    <textarea id="form-materials" placeholder="Ví dụ: Thân da lộn cao cấp;Đế Zoom Air bám đường tốt;Lót đệm lưới chống bí"></textarea>
+                </div>
+                <div class="btn-submit-container">
+                    <button type="submit" class="btn-add-product">Thêm Sản Phẩm</button>
+                </div>
+            </form>
+        </section>
+
+        <div class="product-section">
+            
+            <aside class="sidebar">
+                <h3 class="filter-title" id="main-filter-title">Tất cả sản phẩm (<span id="product-count">7</span>)</h3>
+                <div class="filter-list">
+                    <a href="#">Jordan 1</a>
+                    <a href="#">Jordan Spizike</a>
+                    <a href="#">Jordan Flight Court</a>
+                    <a href="#">Jordan Session</a>
+                    <a href="#">Basketball</a>
+                </div>
+
+                <h3 class="filter-title">Shop By Price</h3>
+                <div class="filter-list">
+                    <a href="#">Dưới 2,000,000đ</a>
+                    <a href="#">2,000,000đ - 5,000,000đ</a>
+                    <a href="#">Trên 5,000,000đ</a>
+                </div>
+            </aside>
+
+            <section class="product-grid" id="product-grid">
+                
+                <div class="no-results" id="no-results">Không tìm thấy sản phẩm phù hợp. Hãy thử từ khóa khác!</div>
+
+                <div class="product-card" data-category="men" 
+                     data-old-price="" data-discount=""
+                     data-desc="Được thiết kế riêng cho các siêu sao bóng rổ, Tatum 4 mang đến độ đàn hồi vượt trội và khả năng bảo vệ mắt cá chân hoàn hảo khi di chuyển cường độ cao."
+                     data-materials="Mặt trên: Vải lưới dệt mesh cao cấp thoáng khí;Đế giữa: Đệm bọt React phản hồi lực siêu nhạy;Đế ngoài: Cao su chống trượt đa hướng">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=600&q=80" alt="Tatum 4 PF">
+                    </div>
+                    <div class="product-info">
+                        <div class="tag-status">Just In</div>
+                        <h4 class="product-name">Tatum 4 PF</h4>
+                        <p class="product-category">Basketball Shoes Giày bóng rổ jordan nam</p>
+                        <p class="product-price">3,669,000₫</p>
+                    </div>
+                </div>
+
+                <div class="product-card" data-category="men sale" 
+                     data-old-price="5,500,000₫" data-discount="10% off"
+                     data-desc="Biểu tượng đường phố nay bước lên sân golf chuyên nghiệp. Thân giày chống thấm nước giúp bạn tự tin trong mọi điều kiện thời tiết."
+                     data-materials="Chất liệu chính: Da thuộc hạt chống thấm nước cao cấp;Đế đinh: Nhựa cứng chịu lực Spiked bám sân cỏ ổn định;Lót trong: Đệm EVA êm ái chống mỏi chân">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80" alt="Air Jordan 1 Low G Spiked">
+                    </div>
+                    <div class="product-info">
+                        <div class="tag-status">Bestseller</div>
+                        <h4 class="product-name">Air Jordan 1 Low G Spiked</h4>
+                        <p class="product-category">Golf Shoes Giày jordan thấp cổ nam</p>
+                        <p class="product-price">4,999,000₫</p>
+                    </div>
+                </div>
+
+                <div class="product-card" data-category="football" 
+                     data-old-price="" data-discount=""
+                     data-desc="Đôi giày dành cho các nhạc trưởng sân cỏ thực thụ. Cảm giác chạm bóng chân thực kết hợp cấu trúc đinh cao cấp giúp kiểm soát bóng tối đa."
+                     data-materials="Thân giày: Da nhân tạo mềm mại kết hợp vân nổi 3D;Đế giày: Đinh FG chuyên dụng cho sân cỏ tự nhiên;Công nghệ: Cổ thun co giãn ôm khít cổ chân">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?auto=format&fit=crop&w=600&q=80" alt="Jordan Tiempo Maestro Elite SE">
+                    </div>
+                    <div class="product-info">
+                        <div class="tag-status"></div>
+                        <h4 class="product-name">Jordan Tiempo Maestro Elite SE</h4>
+                        <p class="product-category">Football Boot Giày bóng đá chuyên nghiệp</p>
+                        <p class="product-price">7,759,000₫</p>
+                    </div>
+                </div>
+
+                <div class="product-card" data-category="men women" 
+                     data-old-price="" data-discount=""
+                     data-desc="Áo thun cơ bản không thể thiếu trong tủ đồ thể thao hằng ngày. Vải mềm mịn, giữ form cực tốt sau nhiều lần giặt."
+                     data-materials="Thành phần: 100% Cotton hữu cơ siêu mềm mại;Kiểu dáng: Regular fit thoải mái, năng động;Công nghệ: Thấm hút mồ hôi thông minh">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80" alt="Nike Sportswear Tee">
+                    </div>
+                    <div class="product-info">
+                        <div class="tag-status">Just In</div>
+                        <h4 class="product-name">Nike Sportswear Club Fleece</h4>
+                        <p class="product-category">Men/Women's T-Shirt Áo thun quần áo ngắn tay</p>
+                        <p class="product-price">850,000₫</p>
+                    </div>
+                </div>
+
+                <div class="product-card" data-category="men women sale" 
+                     data-old-price="1,500,000₫" data-discount="13% off"
+                     data-desc="Dép quai ngang đúc nguyên khối siêu êm ái, mang lại cảm giác thư giãn tuyệt đối cho đôi chân sau những giờ tập luyện mệt mỏi."
+                     data-materials="Vật liệu: Cao su EVA đúc nguyên khối siêu nhẹ;Thiết kế: Quai ngang ôm vòm chân chống trượt;Đế dép: Rãnh nước thông minh nhanh khô">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1603252109303-2751441dd157?auto=format&fit=crop&w=600&q=80" alt="Nike Calm Slide">
+                    </div>
+                    <div class="product-info">
+                        <div class="tag-status">Bestseller</div>
+                        <h4 class="product-name">Nike Calm Slide</h4>
+                        <p class="product-category">Sandals & Slides Dép quai ngang nam nữ</p>
+                        <p class="product-price">1,299,000₫</p>
+                    </div>
+                </div>
+
+                <div class="product-card" data-category="women" 
+                     data-old-price="" data-discount=""
+                     data-desc="Dòng giày chạy bộ huyền thoại quay trở lại với sự êm ái vượt trội từ công nghệ Air Zoom, trợ lực hoàn hảo cho phái nữ tự tin sải bước."
+                     data-materials="Thân giày: Lưới engineered mesh siêu nhẹ, thông thoáng;Bộ đệm: Double Air Zoom units phân bổ ở gót và mũi chân;Đế ngoài: Cao su bền bỉ chống mài mòn">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=600&q=80" alt="Nike Air Max Pegasus">
+                    </div>
+                    <div class="product-info">
+                        <div class="tag-status">Just In</div>
+                        <h4 class="product-name">Nike Air Max Pegasus Nữ</h4>
+                        <p class="product-category">Women's Running Shoes Giày chạy bộ nữ cổ cao</p>
+                        <p class="product-price">4,299,000₫</p>
+                    </div>
+                </div>
+
+                <div class="product-card" data-category="kids" 
+                     data-old-price="" data-discount=""
+                     data-desc="Phiên bản thu nhỏ của dòng Air Force 1 huyền thoại. Thiết kế bảo vệ toàn diện hệ xương chân đang phát triển của trẻ nhỏ."
+                     data-materials="Thân giày: Da tổng hợp cao cấp, dễ dàng lau chùi, vệ sinh;Đế giày: Cao su đúc nguyên khối chịu lực cao;Cổ giày: Lót đệm mút dày êm ái">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1514989940723-e8e5163ccbe8?auto=format&fit=crop&w=600&q=80" alt="Nike Air Force 1 Kids">
+                    </div>
+                    <div class="product-info">
+                        <div class="tag-status">Kids Edition</div>
+                        <h4 class="product-name">Nike Air Force 1 LE Kids</h4>
+                        <p class="product-category">Kids Shoes Giày trẻ em thể thao</p>
+                        <p class="product-price">2,199,000₫</p>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="product-modal">
+        <div class="modal-container">
+            <button class="close-modal-btn" id="close-modal">&times;</button>
+            
+            <div class="modal-layout">
+                <div class="modal-thumbs">
+                    <img src="" alt="Thumb 1" class="thumb-img active" id="thumb-1">
+                    <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=100&q=80" alt="Thumb 2" class="thumb-img">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=100&q=80" alt="Thumb 3" class="thumb-img">
+                </div>
+
+                <div class="modal-main-img">
+                    <img src="" alt="Main Product Image" id="modal-img-target">
+                </div>
+
+                <div class="modal-details">
+                    <h2 class="detail-name" id="modal-name-target">Tên sản phẩm</h2>
+                    <p class="detail-category" id="modal-cat-target">Danh mục phân loại</p>
+                    
+                    <div class="price-box">
+                        <span class="detail-price" id="modal-price-target">0₫</span>
+                        <span class="detail-old-price" id="modal-old-price-target"></span>
+                        <span class="detail-discount" id="modal-discount-target"></span>
+                    </div>
+
+                    <div class="size-section-header">
+                        <span>Select Size</span>
+                        <span class="size-guide">Size Guide</span>
+                    </div>
+                    <div class="size-grid">
+                        <button class="size-btn">EU 40</button>
+                        <button class="size-btn">EU 40.5</button>
+                        <button class="size-btn">EU 41</button>
+                        <button class="size-btn">EU 42</button>
+                        <button class="size-btn">EU 42.5</button>
+                        <button class="size-btn">EU 43</button>
+                        <button class="size-btn">EU 44</button>
+                        <button class="size-btn">EU 44.5</button>
+                        <button class="size-btn">EU 45</button>
+                    </div>
+
+                    <div class="action-btns">
+                        <button class="btn-black">Add to Bag</button>
+                        <button class="btn-outline">
+                            Favourite <i class="fa-regular fa-heart"></i>
+                        </button>
+                    </div>
+
+                    <p class="detail-desc-text" id="modal-desc-target">Mô tả chi tiết sản phẩm.</p>
+                    <div class="detail-materials">
+                        <h4 style="font-size: 15px; font-weight:600; margin-bottom:8px;">Thông số chi tiết:</h4>
+                        <ul id="modal-materials-list">
+                            <li>Chất liệu cao cấp bền bỉ.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lấy các thành phần giao diện liên quan đến Modal
+        const modal = document.getElementById('product-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const productGrid = document.getElementById('product-grid');
+        const productCountSpan = document.getElementById('product-count');
+
+        // Hàm cập nhật số lượng sản phẩm hiển thị trên thanh Sidebar
+        function updateProductCount() {
+            const currentCards = productGrid.querySelectorAll('.product-card:not(.hidden)');
+            productCountSpan.innerText = currentCards.length;
+        }
+
+        // Đăng ký sự kiện click cho lưới sản phẩm (Sử dụng Event Delegation)
+        productGrid.addEventListener('click', function(e) {
+            const card = e.target.closest('.product-card');
+            if (!card) return; // Nếu bấm trượt ra ngoài thẻ card thì bỏ qua
+
+            // Lấy thông tin từ các thuộc tính data-* trên thẻ card
+            const name = card.querySelector('.product-name').innerText;
+            const category = card.querySelector('.product-category').innerText;
+            const price = card.querySelector('.product-price').innerText;
+            const imgSrc = card.querySelector('.product-img-wrapper img').src;
+            const desc = card.getAttribute('data-desc') || 'Chưa có mô tả cụ thể cho sản phẩm này.';
+            const materialsRaw = card.getAttribute('data-materials') || '';
+            const oldPrice = card.getAttribute('data-old-price') || '';
+            const discount = card.getAttribute('data-discount') || '';
+
+            // Đổ dữ liệu vào Modal gán mục tiêu
+            document.getElementById('modal-name-target').innerText = name;
+            document.getElementById('modal-cat-target').innerText = category;
+            document.getElementById('modal-price-target').innerText = price;
+            document.getElementById('modal-img-target').src = imgSrc;
+            document.getElementById('thumb-1').src = imgSrc;
+            document.getElementById('modal-desc-target').innerText = desc;
+
+            // Xử lý giá cũ và tag giảm giá
+            const oldPriceTarget = document.getElementById('modal-old-price-target');
+            const discountTarget = document.getElementById('modal-discount-target');
+            if(oldPrice) {
+                oldPriceTarget.innerText = oldPrice;
+                oldPriceTarget.style.display = 'inline';
+            } else {
+                oldPriceTarget.style.display = 'none';
+            }
+            if(discount) {
+                discountTarget.innerText = discount;
+                discountTarget.style.display = 'inline';
+            } else {
+                discountTarget.style.display = 'none';
+            }
+
+            // Xử lý danh sách thông số chi tiết kĩ thuật
+            const listContainer = document.getElementById('modal-materials-list');
+            listContainer.innerHTML = ''; // Làm sạch danh sách cũ
+            if (materialsRaw) {
+                const materialsArray = materialsRaw.split(';');
+                materialsArray.forEach(item => {
+                    if(item.trim()) {
+                        const li = document.createElement('li');
+                        li.innerText = item.trim();
+                        listContainer.appendChild(li);
+                    }
+                });
+            } else {
+                listContainer.innerHTML = '<li>Thông số sản phẩm đang được cập nhật.</li>';
+            }
+
+            // Hiển thị Modal bằng cách thêm class .open
+            modal.classList.add('open');
+        });
+
+        // Đóng Modal khi bấm nút X hoặc bấm ra vùng mờ overlay bên ngoài
+        closeModalBtn.addEventListener('click', () => modal.classList.remove('open'));
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('open');
+        });
+
+        // XỬ LÝ LOGIC FORM THÊM SẢN PHẨM MỚI
+        const addProductForm = document.getElementById('add-product-form');
+        
+        addProductForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Chặn hành động tải lại trang mặc định của form
+
+            // Lấy dữ liệu người dùng nhập từ các ô input
+            const name = document.getElementById('form-name').value;
+            const category = document.getElementById('form-category').value;
+            const price = document.getElementById('form-price').value;
+            const tag = document.getElementById('form-tag').value;
+            const selectCat = document.getElementById('form-select-cat').value;
+            const image = document.getElementById('form-image').value;
+            const desc = document.getElementById('form-desc').value;
+            const materials = document.getElementById('form-materials').value;
+
+            // Tạo phần tử div mới cho Product Card
+            const newCard = document.createElement('div');
+            newCard.className = 'product-card';
+            newCard.setAttribute('data-category', selectCat);
+            newCard.setAttribute('data-old-price', '');
+            newCard.setAttribute('data-discount', '');
+            newCard.setAttribute('data-desc', desc);
+            newCard.setAttribute('data-materials', materials);
+
+            // Xây dựng cấu trúc HTML bên trong thẻ Card
+            newCard.innerHTML = `
+                <div class="product-img-wrapper">
+                    <img src="${image}" alt="${name}">
+                </div>
+                <div class="product-info">
+                    <div class="tag-status">${tag}</div>
+                    <h4 class="product-name">${name}</h4>
+                    <p class="product-category">${category}</p>
+                    <p class="product-price">${price}</p>
+                </div>
+            `;
+
+            // Đẩy Card vừa tạo vào trong lưới danh sách sản phẩm hiện tại
+            productGrid.appendChild(newCard);
+
+            // Reset form làm sạch các ô nhập liệu sau khi thêm thành công
+            addProductForm.reset();
+            document.getElementById('form-image').value = "https://images.unsplash.com/photo-1597045566677-8cf032ed6634?auto=format&fit=crop&w=600&q=80";
+
+            // Cập nhật lại bộ đếm sản phẩm ở cột trái
+            updateProductCount();
+
+            // Thông báo nhỏ cho người quản trị biết
+            alert(`Đã thêm thành công sản phẩm "${name}" vào danh sách!`);
+        });
+
+        // Xử lý sự kiện chọn size khi nhấn nút
+        document.querySelectorAll('.size-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html>
