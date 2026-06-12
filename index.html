@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Highlands Coffee Clone - Single File</title>
+    
+    <style>
+        /* --- Quy tắc chung & Reset CSS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            overflow-x: hidden;
+        }
+
+        /* --- NAVBAR (HEADER) --- */
+        .navbar {
+            background-color: #b41622; 
+            font-weight: bold;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            height: 80px;
+            position: relative;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 1px;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            border-bottom: 2px solid white;
+            padding-bottom: 5px;
+        }
+
+        .logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo img {
+            height: 65px;
+            border-radius: 50%;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn-order {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .store-search {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .lang-switch {
+            display: flex;
+            gap: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        /* --- CẤU TRÚC SECTION CHUNG --- */
+        .section {
+            padding: 100px 20px 60px 20px; /* Bù trừ khoảng trống cho fixed navbar */
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 40px;
+        }
+
+        .content-box {
+            flex: 1;
+            color: #ffffff;
+        }
+
+        .content-box h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .content-box p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .image-box {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-box img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Các nút khám phá */
+        .btn-discover {
+            display: inline-block;
+            padding: 12px 35px;
+            border: 1.5px solid #ffffff;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-discover:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        /* --- ĐẶC TÍNH TỪNG SECTION --- */
+
+        /* Section Cà Phê */
+        .coffee-section {
+            background: linear-gradient(to bottom, #530404 0%, #111111 100%);
+        }
+
+        /* Section Trà */
+        .tea-section {
+            background-color: #b7d5b2; /* Màu xanh lá nhạt giống hình */
+            padding-top: 60px;
+        }
+
+        .tea-section .content-box {
+            color: #0d381e; /* Chữ màu xanh đậm cho dễ đọc trên nền sáng */
+        }
+
+        .text-right {
+            text-align: left;
+        }
+
+        .btn-discover.dark-border {
+            border-color: #0d381e;
+            color: #0d381e;
+        }
+
+        .btn-discover.dark-border:hover {
+            background-color: #0d381e;
+            color: #ffffff;
+        }
+
+        /* --- GIAO DIỆN CHO ĐIỆN THOẠI (RESPONSIVE) --- */
+        @media (max-width: 768px) {
+            /* Navbar trên mobile */
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: #b41622;
+                padding: 20px;
+                gap: 15px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .logo {
+                left: 45%;
+            }
+
+            .nav-right .store-search {
+                display: none; /* Ẩn chữ dài trên mobile */
+            }
+
+            /* Các section xếp chồng hàng dọc trên mobile */
+            .section-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 30px;
+            }
+
+            /* Đảo ngược thứ tự trên mobile: ảnh trà lên trước chữ trà cho thuận mắt */
+            .section-container.reverse {
+                flex-direction: column-reverse; 
+            }
+
+            .content-box h2 {
+                font-size: 32px;
+            }
+
+            .content-box p {
+                font-size: 14px;
+            }
+
+            .image-box img {
+                max-height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+            
+            <nav class="nav-links" id="navLinks">
+                <a href="#" class="active">THỰC ĐƠN</a>
+                <a href="#">VỀ HIGHLANDS</a>
+                <a href="#">NGHỀ NGHIỆP</a>
+                <a href="#">HỖ TRỢ</a>
+            </nav>
+
+            <div class="logo">
+                <img src="https://via.placeholder.com/80/b41622/ffffff?text=LOGO" alt="Highlands Coffee">
+            </div>
+
+            <div class="nav-right">
+                <a href="#" class="btn-order">ĐẶT HÀNG</a>
+                <a href="#" class="store-search"><span class="pin-icon">📍</span> Tìm cửa hàng</a>
+                <div class="lang-switch">
+                    <span class="flag">🇻🇳</span>
+                    <span class="flag">🇬🇧</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="section coffee-section">
+        <div class="section-container">
+            <div class="content-box">
+                <h2>CÀ PHÊ</h2>
+                <p>Sự kết hợp hoàn hảo giữa hạt cà phê Robusta & Arabica thượng hạng được trồng trên những vùng cao nguyên Việt Nam màu mỡ, qua những bí quyết rang xay độc đáo, Highlands Coffee chúng tôi tự hào giới thiệu những dòng sản phẩm Cà phê mang hương vị đậm đà và tinh tế.</p>
+                <a href="#" class="btn-discover">KHÁM PHÁ THÊM</a>
+            </div>
+            <div class="image-box">
+                <img src="https://via.placeholder.com/400x500/222/fff?text=Ly+Ca+Phe" alt="Cà phê Highlands">
+            </div>
+        </div>
+    </section>
+
+    <section class="section tea-section">
+        <div class="section-container reverse">
+            <div class="content-box text-right">
+                <h2>TRÀ</h2>
+                <p>Hương vị tự nhiên, thơm ngon của Trà Việt với phong cách hiện đại tại Highlands Coffee sẽ giúp bạn gợi mở vị giác của bản thân và tận hưởng một cảm giác thật khoan khoái, tươi mới.</p>
+                <a href="#" class="btn-discover dark-border">KHÁM PHÁ THÊM</a>
+            </div>
+            <div class="image-box">
+                <img src="https://via.placeholder.com/400x500/b7d5b2/000?text=Ly+Tra" alt="Trà Highlands">
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
